@@ -9,15 +9,14 @@ parses it, and then begins forwarding traffic between the client and
 the target in both directions.
 
 Note that this is the Rust version of websockify. The primary
-project is the [Python version of
-websockify](https://github.com/novnc/websockify).
+project is the [Python version of websockify](https://github.com/novnc/websockify).
 
 To run websockify-rs:
 
-    install the environment so you can build rust application
+    install the environment so you can build a rust application
     cd websockify-rs
     cargo build --release
-    run the executable with proper options
+    run the executable with the proper options
 
 ```
 Options:
@@ -27,9 +26,14 @@ Options:
   -h, --help             Print help information
   -V, --version          Print version information
 ```
+To build an executable for windows service
+```
+cargo run --bin websockify-rs --features daemonize
+```
 
 ### Todo
 
+- [x] WebSocket/Socket Proxy
+- [x] Windows Daemonize Support
 - [ ] HTTPS Support
-- [ ] Message logging
-  
+- [ ] Message Logging

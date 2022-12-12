@@ -11,7 +11,17 @@ headers = "^0.3"
 futures = "^0.3"
 tokio = { version = "^1.2", features = ["full"] }
 tower-http = { version = "0.3.0", features = ["fs", "trace"] }
-tracing = "^0.1"
-tracing-subscriber = { version = "^0.3", features = ["env-filter"] }
+tracing = "^0"
+tracing-subscriber = { version = "^0.3", features = ["env-filter", "local-time"] }
 mio = { version = "^0.8", features = ["os-poll", "net"] }
 clap = { version = "^4", features = ["derive"] }
+windows-service = "^0.5"
+axum-server = "0.4.4"
+log4rs = "1.2.0"
+tracing-appender ={ version = "^0" }
+color-eyre = "0.6"
+tracing-error = "0.2.0"
+time = {version = "^0.3"}
+
+[features]
+daemonize = []
