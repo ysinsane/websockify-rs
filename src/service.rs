@@ -90,8 +90,12 @@ pub fn run_service() -> Result<()> {
     let handle = axum_server::Handle::new();
     
     runtime.block_on(async {
-        tokio::spawn(graceful_shutdown(handle.clone(), shutdown_rx));
+        let t = tokio::spawn(graceful_shutdown(handle.clone(), shutdown_rx));
         start_server(handle).await;
+        match t.await {
+            Ok(_) => {},
+            Err(e) => {println!("graceful_shutdown thread error:{}", e)},
+        } 
     });
 
     status_handle.set_service_status(ServiceStatus {

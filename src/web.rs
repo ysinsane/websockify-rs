@@ -1,7 +1,7 @@
 use axum::{
     extract::{
         ws::{Message, WebSocket, WebSocketUpgrade},
-        State,
+        State, Path,
     },
     http::StatusCode,
     response::IntoResponse,
@@ -24,6 +24,8 @@ use tokio::{
     },
     sync::oneshot::{self, error::TryRecvError, Receiver},
 };
+use tokio::net::lookup_host;
+
 use tower_http::{
     services::ServeDir,
     trace::{DefaultMakeSpan, TraceLayer},
@@ -51,13 +53,6 @@ pub async fn start_server(handle: Handle) {
         Ok(it) => it,
         Err(err) => {error!("Arg parse error:{}", err); panic!("")},
     };
-    // tracing_subscriber::registry()
-    //     .with(
-    //         tracing_subscriber::EnvFilter::try_from_default_env()
-    //             .unwrap_or_else(|_| "example_websockets=debug,tower_http=debug".into()),
-    //     )
-    //     .with(tracing_subscriber::fmt::layer())
-    //     .init();
     let assets_dir = args.web.clone(); //PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("assets");
     info!("source 地址：{}", args.source);
     let target_addr = lookup_host(&args.target)
@@ -84,11 +79,10 @@ pub async fn start_server(handle: Handle) {
     app = app
     // routes are matched from bottom to top, so we have to put `nest` at the
     // top since it matches all routes
-    .route("/websockify", get(ws_handler).with_state(state))
+    .route("/websockify/:socket_address", get(ws_handler).with_state(state))
     // logging so we can see whats going on
     .layer(TraceLayer::new_for_http().make_span_with(DefaultMakeSpan::default().include_headers(true)));
 
-    use tokio::net::lookup_host;
     let addr = lookup_host(&args.source)
     .await
     .expect("Wrong source address")
@@ -104,10 +98,13 @@ pub async fn start_server(handle: Handle) {
         };
 }
 
-async fn ws_handler(ws: WebSocketUpgrade, State(state): State<AppState>) -> impl IntoResponse {
-    // accept connections and process them serially
-
-    // 也要在handle_socket里把从websocket读到的内容写入tcp
+async fn ws_handler(Path(socket_address):Path<String>, ws: WebSocketUpgrade, State(state): State<AppState>) -> impl IntoResponse {
+    // 如果socket_address是合法的地址，那就优先用这个地址
+    if let Ok(mut iter) = lookup_host(socket_address).await {
+        if let Some(addr) = iter.next(){
+           return ws.on_upgrade(move |socket| handle_socket(socket, addr));
+        }
+    } 
     ws.on_upgrade(move |socket| handle_socket(socket, state.addr))
 }
 

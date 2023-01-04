@@ -50,7 +50,7 @@ fn main() -> windows_service::Result<()> {
         .with(file_layer)
         .with(time_layer)
         .init();
-        run()
+    run()
 }
 #[cfg(feature = "daemonize")]
 fn run() -> windows_service::Result<()>{
