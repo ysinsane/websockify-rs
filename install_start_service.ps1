@@ -2,7 +2,7 @@ $serviceName = "Websockify"
 $webFolder = "C:\projs\rust\websockify-rs\assets"
 $websockifyExe = "C:\projs\rust\ws-rs\target\release\websockify-rs.exe"
 $vncAddress = "127.0.0.1:5900"
-$webHost = "0.0.0.0:80"
+$webHost = "127.0.0.1:9000"
 
 if (Get-Service $serviceName -ErrorAction SilentlyContinue)
 {
