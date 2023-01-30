@@ -1,4 +1,4 @@
-## websockify-rs: WebSockets support for any application/server
+## websockify-rs: WebSockets support for windows application/server
 
 This is a rust implement of the [websockify-js](https://github.com/novnc/websockify-js), which is part of the
 [noVNC](https://github.com/kanaka/noVNC) project.
@@ -21,7 +21,7 @@ To run websockify-rs:
 ```
 Options:
   -w, --web <WEB>        folder of the static content
-  -t, --target <TARGET>  the socket address of vnc host [default: localhost:5900]
+  -t, --target <TARGET>  the socket address of vnc host [default: localhost:5900], you can overide this value by specify a new value after the websockt path, eg: /websockify/192.168.20.1:5900
   -s, --source <SOURCE>  the socket address of websevice [default: localhost:9000]
   -h, --help             Print help information
   -V, --version          Print version information
